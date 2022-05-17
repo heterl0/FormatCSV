@@ -17,7 +17,7 @@ import java.util.Scanner;
  */
 public class FormatCSV {
 
-    private ArrayList<String[]> dataCSV;        // dataCSV used to stored data of file
+    private ArrayList<Person> dataCSV;        // dataCSV used to stored data of file
     private String importPath;                  // importPath stored the path of import file 
     private String exportPath;                  // exportPath stored the path of export file
 
@@ -49,7 +49,8 @@ public class FormatCSV {
                         // loop and read file until the end of file (eof)
                         while (line != null) {
                             // each record is splited to an array of string
-                            this.dataCSV.add(line.split(","));
+                            String[] arr = line.split(",");
+                            this.dataCSV.add(new Person(arr[0], arr[1], arr[2], arr[3], arr[4]));
                             line = br.readLine();
                         }
                         System.out.println("Import: Done");
@@ -76,9 +77,9 @@ public class FormatCSV {
         // loop through all records in dataCSV
         for (int i = 1; i < this.dataCSV.size(); i++) {
             // get a record at index specify
-            String[] things = this.dataCSV.get(i);
+            Person person = this.dataCSV.get(i);
             // get address.
-            String address = things[4];
+            String address = person.getAddress();
             // address is splited into array of words
             String[] words = address.split("\\s+");
             address = "";
@@ -90,7 +91,7 @@ public class FormatCSV {
                 }
                 address = address + words[j] + " ";
             }
-            things[4] = address.trim();
+            this.dataCSV.get(i).setAddress(address.trim());
         }
         System.out.println("---------- Format Address");
         System.out.println("------ Format: Done");
@@ -105,9 +106,9 @@ public class FormatCSV {
         // loop through all records in dataCSV
         for (int i = 1; i < this.dataCSV.size(); i++) {
             // get a record at index specify
-            String[] things = this.dataCSV.get(i);
+            Person person = this.dataCSV.get(i);
             // get name.
-            String name = things[1];
+            String name = person.getName();
             // name is splited into array of words
             String[] words = name.split("\\s+");
             name = "";
@@ -118,7 +119,7 @@ public class FormatCSV {
                 }
                 name = name + words[j] + " ";
             }
-            things[1] = name.trim();
+            this.dataCSV.get(i).setName(name.trim());
         }
         System.out.println("---------- Format Name");
         System.out.println("------ Format: Done");
@@ -150,14 +151,9 @@ public class FormatCSV {
         try (FileWriter fw = new FileWriter(exportFile, false)) {
             // loop through dataCSV get each record and write it into file
             for (int i = 0; i < this.dataCSV.size(); i++) {
-                String[] record = this.dataCSV.get(i);
-                for (int j = 0; j < record.length; j++) {
-                    if (j != 0) {
-                        fw.append(",");
-                    }
-                    fw.append(record[j]);
-                }
-                fw.append("\n");
+                Person person = this.dataCSV.get(i);
+                fw.append(person.getId() + "," + person.getName() + "," + person.getEmail()+ 
+                        "," + person.getPhoneNumber() + "," + person.getAddress() + "\n");
             }
             System.out.println("Export: Done");
         } catch (Exception e) {
@@ -222,4 +218,5 @@ public class FormatCSV {
             }
         } while (isLoop);
     }
+    
 }
